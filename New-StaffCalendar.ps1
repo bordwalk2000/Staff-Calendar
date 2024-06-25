@@ -23,7 +23,14 @@ Function New-StaffCalendar {
         # Worksheet title row
         [Parameter()]
         [string]
-        $worksheetTitleRow = "IT Staff Calendar"
+        $worksheetTitleRow,
+
+        # Worksheet Zoom Level
+        [Parameter(
+            HelpMessage = "Set the zoom level you would like for each sheet."
+        )]
+        [int]
+        $worksheetZoomLevel = 100
     )
 
     # Creates new Excel application
@@ -55,10 +62,14 @@ Function New-StaffCalendar {
         $worksheet = $workbook.Worksheets.Add(
             [System.Reflection.Missing]::Value, $workbook.Worksheets.Item($workbook.Worksheets.Count)
         )
+
         # Rename new sheet to month abbreviated name
         $worksheet.Name = $month.AbbreviatedName
-        # Set zoom level to 200%
-        $excel.ActiveWindow.Zoom = 200
+
+        # Set zoom level
+        if ($worksheetZoomLevel -ne 100) {
+            $excel.ActiveWindow.Zoom = $worksheetZoomLevel
+        }
 
         # Set column widths
         $worksheet.Columns.Item("A").ColumnWidth = 12
@@ -126,8 +137,10 @@ Function New-StaffCalendar {
         foreach ($week in $weeks) {
             # Define week name and date range
             $dateCellRange = $worksheet.Range("B$($row-1):F$($row)")
+
             # Set background color to RGB(231,230,230) or #E7E6E6
             $dateCellRange.Interior.Color = 15132391
+
             # Add borders to the range with xlContinuous
             $dateCellRange.Borders.LineStyle = 1
 
