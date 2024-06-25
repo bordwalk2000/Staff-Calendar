@@ -3,27 +3,33 @@ Function New-StaffCalendar {
     param (
         # Calendar year to create
         [Parameter(
-            Mandatory
+            Mandatory,
+            HelpMessage = "Year you want calendar created for."
         )]
         [int]
         $year,
 
         # List of users to be added
         [Parameter(
-            Mandatory
+            Mandatory,
+            HelpMessage = "List of users to be added."
         )]
         [string[]]
         $users,
 
         # Excel file name
-        [Parameter()]
+        [Parameter(
+            HelpMessage = "Filename of created excel file."
+        )]
         [string]
-        $excelFileName = "TPM IT - $year Team Schedule",
+        $excelFileName = "$year Staff Schedule",
 
         # Worksheet title row
-        [Parameter()]
+        [Parameter(
+            HelpMessage = "Worksheet title string that will be followed by the month name."
+        )]
         [string]
-        $worksheetTitleRow,
+        $worksheetTitleRow = "Staff Calendar",
 
         # Worksheet Zoom Level
         [Parameter(
@@ -35,7 +41,7 @@ Function New-StaffCalendar {
 
     # Creates new Excel application
     $excel = New-Object -ComObject Excel.Application
-    $excel.Visible = $false
+    $excel.Visible = $true # Should be true otherwise looks like script is hung while it creates the file.
     $workbook = $excel.Workbooks.Add()
 
     # Get the list of month names and abbreviated month names.
