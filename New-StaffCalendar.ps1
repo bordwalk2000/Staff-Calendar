@@ -28,6 +28,9 @@ Function New-StaffCalendar {
     .PARAMETER worksheetTitleRow
     Specifies the worksheet title string that will be followed by the month name. The default value is "Staff Calendar".
 
+    .PARAMETER firstColumnWidth
+    Specifies the width of the "A" column. The default value is 13.
+
     .PARAMETER worksheetZoomLevel
     Specifies the zoom level for each sheet. The default value is 100.
 
@@ -105,6 +108,13 @@ Function New-StaffCalendar {
         [string]
         $worksheetTitleRow = "Staff Calendar",
 
+        # Column "A" Width
+        [Parameter(
+            HelpMessage = "The width of the of the 'A' column."
+        )]
+        [int]
+        $firstColumnWidth = 13,
+
         # Worksheet Zoom Level
         [Parameter(
             HelpMessage = "Set the zoom level you would like for each sheet."
@@ -169,7 +179,7 @@ Function New-StaffCalendar {
         }
 
         # Set column widths
-        $worksheet.Columns.Item("A").ColumnWidth = 12
+        $worksheet.Columns.Item("A").ColumnWidth = $firstColumnWidth
         $worksheet.Columns.Item("B").ColumnWidth = 11.5
         $worksheet.Columns.Item("C").ColumnWidth = 11.5
         $worksheet.Columns.Item("D").ColumnWidth = 11.5
@@ -235,7 +245,7 @@ Function New-StaffCalendar {
             # Define week name and date range
             $dateCellRange = $worksheet.Range("B$($row-1):F$($row)")
 
-            # Set background color to RGB(231,230,230) or #E7E6E6
+            # Set background color to RGB (231,230,230) or #E7E6E6
             $dateCellRange.Interior.Color = 15132391
 
             # Add borders to the range with xlContinuous
