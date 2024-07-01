@@ -1,4 +1,53 @@
 Function New-StaffCalendar {
+    <#
+    .SYNOPSIS
+    Creates a staff calendar for a specified year, either from a list of users with the same work hours or from a CSV file.
+
+    .DESCRIPTION
+    This function generates a staff calendar in Excel format for a given year.  It can accept a list of users with default work
+    hours or import users from a CSV file.  The resulting calendar includes workdays, user names, and their respective work
+    hours.  Various parameters allow customization of the Excel file, including the file name, worksheet title, and zoom level.
+
+    .PARAMETER year
+    Specifies the calendar year to create.
+
+    .PARAMETER users
+    Specifies the list of users to be added to the calendar.  This parameter is mandatory when using the "users" parameter set.
+
+    .PARAMETER defaultUserHours
+    Specifies the work hours to be used for all manually specified users. The default value is "8-5".
+    This parameter is in the "users" parameter set.
+
+    .PARAMETER csvPath
+    Specifies the CSV file path to import user data. The CSV requires a header row of "Name" and "WorkHours".
+    This parameter is mandatory when using the "csv" parameter set.
+
+    .PARAMETER excelFileName
+    Specifies the filename of the created Excel file. The default value is "$year Staff Schedule".
+
+    .PARAMETER worksheetTitleRow
+    Specifies the worksheet title string that will be followed by the month name. The default value is "Staff Calendar".
+
+    .PARAMETER worksheetZoomLevel
+    Specifies the zoom level for each sheet. The default value is 100.
+
+    .EXAMPLE
+    PS C:\> New-StaffCalendar -year 2024 -users "John Doe", "Jane Smith" -defaultUserHours "9-5"
+
+    Creates a staff calendar for the year 2024 with specified users and default work hours from 9 to 5.
+
+    .EXAMPLE
+    PS C:\> New-StaffCalendar -year 2024 -csvPath "C:\Users\Documents\staff.csv"
+
+    Creates a staff calendar for the year 2024 using user data imported from the specified CSV file.
+
+    .NOTES
+    This function requires Excel to be installed on the system as it interacts with the Excel COM object to generate the calendar.
+
+    .LINK
+    https://github.com/bordwalk2000/Staff-Calendar
+    #>
+
     [CmdletBinding(
         DefaultParameterSetName = "users"
     )]
