@@ -1,5 +1,7 @@
 Function New-StaffCalendar {
-    [CmdletBinding()]
+    [CmdletBinding(
+        DefaultParameterSetName = "users"
+    )]
     param (
         # Calendar year to create
         [Parameter(
@@ -12,10 +14,33 @@ Function New-StaffCalendar {
         # List of users to be added
         [Parameter(
             Mandatory,
-            HelpMessage = "List of users to be added."
+            HelpMessage = "List of users to be added.",
+            ParameterSetName = "users"
         )]
         [string[]]
         $users,
+
+        # The work houses to be used for the users specified.
+        [Parameter(
+            HelpMessage = "The work hours to be used for all the manually specified users.",
+            ParameterSetName = "users"
+        )]
+        [string]
+        $defaultUserHours = "8-5",
+
+        # List of users to be added
+        [Parameter(
+            Mandatory,
+            HelpMessage = "CSV Path to get data.",
+            ParameterSetName = "csv"
+        )]
+        [ValidateScript(
+            {
+                Test-Path -Path $_
+            }
+        )]
+        [System.IO.FileInfo]
+        $csvPath,
 
         # Excel file name
         [Parameter(
@@ -38,6 +63,23 @@ Function New-StaffCalendar {
         [int]
         $worksheetZoomLevel = 100
     )
+
+    # Create userList object
+    if ($PSCmdlet.ParameterSetName -eq "csv") {
+        $userList = Import-Csv $csvPath
+    }
+    elseif ($PSCmdlet.ParameterSetName -eq "users") {
+        # Define userList object
+        $userList = [PSCustomObject]@()
+
+        # Populate to userList from list of users
+        foreach ($user in $users) {
+            $userList += [PSCustomObject]@{
+                Name      = $user;
+                WorkHours = $defaultUserHours
+            }
+        }
+    }
 
     # Creates new Excel application
     $excel = New-Object -ComObject Excel.Application
@@ -152,8 +194,8 @@ Function New-StaffCalendar {
 
             # Insert users rows
             $userRowCount = $row + 1
-            foreach ($user in $users) {
-                $worksheet.Cells.Item(($userRowCount), (1)) = $user
+            foreach ($user in $userList) {
+                $worksheet.Cells.Item(($userRowCount), (1)) = $user.Name
                 # Set borders around all users data cells
                 $worksheet.Range(
                     $worksheet.Cells.Item($userRowCount, 1),
@@ -193,15 +235,21 @@ Function New-StaffCalendar {
                 $dateCell.HorizontalAlignment = -4108  # -4108 corresponds to center alignment
 
                 # Add work hours for each user
-                $userRowCount = $row + 1
-                foreach ($user in $users) {
-                    $worksheet.Cells.Item($userRowCount++, $col).Value2 = "7:30 - 4:30"
+                $hourRowCount = $row + 1
+                foreach ($user in $userList) {
+                    # Set hour cell
+                    $hoursCell = $worksheet.Cells.Item($hourRowCount, $col)
+                    $hoursCell.NumberFormat = "@"  # "@" symbol is the cell format code for text
+                    $hoursCell.Value2 = $user.WorkHours
+
+                    # Increase hour row count.
+                    $hourRowCount++
                 }
 
-                # Incase column count
+                # Increase column count
                 $col++
             }
-            $row = $row + $users.Count + 3
+            $row = $row + $userList.Count + 3
         }
 
         # Set Font for the Sheet
