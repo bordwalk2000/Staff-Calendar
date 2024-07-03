@@ -140,10 +140,16 @@ Function New-StaffCalendar {
         }
     }
 
-    # Creates new Excel application
-    $excel = New-Object -ComObject Excel.Application
-    $excel.Visible = $true # Should be true otherwise looks like script is hung while it creates the file.
-    $workbook = $excel.Workbooks.Add()
+    try {
+        # Creates new Excel application
+        $excel = New-Object -ComObject Excel.Application
+        $excel.Visible = $true # Should be true otherwise looks like script is hung while it creates the file.
+        $workbook = $excel.Workbooks.Add()
+    }
+    catch {
+        $Message = "Unable to Create Excel Object.  Make sure Excel is installed on current computer.  $_"
+        Write-Error -Message $Message -ErrorAction Stop
+    }
 
     # Get the list of month names and abbreviated month names.
     $monthNameList = (Get-Culture).DateTimeFormat.MonthNames
