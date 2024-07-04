@@ -39,6 +39,9 @@ function Get-ExcelColorIndexValue {
 
     .NOTES
         This function uses the Excel color index formula, which combines RGB values into a single integer.
+
+    .LINK
+    https://github.com/bordwalk2000/StaffCalendar
     #>
 
     [CmdletBinding(

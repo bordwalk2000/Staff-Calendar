@@ -48,7 +48,7 @@ Function New-StaffCalendar {
     This function requires Excel to be installed on the system as it interacts with the Excel COM object to generate the calendar.
 
     .LINK
-    https://github.com/bordwalk2000/Staff-Calendar
+    https://github.com/bordwalk2000/StaffCalendar
     #>
 
     [CmdletBinding(
