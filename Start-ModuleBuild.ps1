@@ -5,7 +5,7 @@ param(
 
 $params = @{
     SourcePath                 = "$PSScriptRoot\Source\StaffCalendar.psd1"
-    CopyPaths                  = @("$PSScriptRoot\README")
+    CopyPaths                  = @("$PSScriptRoot\README.md")
     Version                    = $Version
     UnversionedOutputDirectory = $false
 }
