@@ -35,14 +35,14 @@ Function New-StaffCalendar {
     Specifies the zoom level for each sheet. The default value is 100.
 
     .EXAMPLE
-    PS C:\> New-StaffCalendar -year 2024 -users "John Doe", "Jane Smith" -defaultUserHours "9-5"
+    PS C:\> New-StaffCalendar -year 1997 -users "Jack O", "Sam C", "Daniel J" -defaultUserHours "9-5"
 
-    Creates a staff calendar for the year 2024 with specified users and default work hours from 9 to 5.
+    Creates a staff calendar for the year 1997 with specified users and default work hours from 9 to 5.
 
     .EXAMPLE
-    PS C:\> New-StaffCalendar -year 2024 -csvPath "C:\Users\Documents\staff.csv"
+    PS C:\> New-StaffCalendar -year 2266 -csvPath .\csv_example\staff.csv
 
-    Creates a staff calendar for the year 2024 using user data imported from the specified CSV file.
+    Creates a staff calendar for the year 2266 using user data imported from the specified CSV file.
 
     .NOTES
     This function requires Excel to be installed on the system as it interacts with the Excel COM object to generate the calendar.
