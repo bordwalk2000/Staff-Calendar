@@ -16,7 +16,7 @@ Clicking around in the temp excel file that is currently being populated will ca
 
 ## 💿 Installation
 
-The StaffCalendar PowerShell Module is published to the PowerShell Repository. You will want it add it to your user profile by running the following command.
+The StaffCalendar PowerShell Module is published to the PowerShell Gallery.  You can install it into your user profile by running the following command.
 
 ```powershell
 Install-Module -Name StaffCalendar
