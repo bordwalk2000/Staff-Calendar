@@ -1,4 +1,3 @@
-Function New-StaffCalendar {
     <#
     .SYNOPSIS
     Creates a staff calendar for a specified year, either from a list of users with the same work hours or from a CSV file.
@@ -51,6 +50,7 @@ Function New-StaffCalendar {
     https://github.com/bordwalk2000/StaffCalendar
     #>
 
+Function New-StaffCalendar {
     [CmdletBinding(
         DefaultParameterSetName = "users"
     )]
@@ -151,7 +151,7 @@ Function New-StaffCalendar {
         Write-Error -Message $Message -ErrorAction Stop
     }
 
-    # Get the list of month names and abbreviated month names.
+    # Get the list of month names and abbreviated month names
     $monthNameList = (Get-Culture).DateTimeFormat.MonthNames
     $abbreviatedMonthNameList = (Get-Culture).DateTimeFormat.AbbreviatedMonthNames
 
@@ -171,7 +171,7 @@ Function New-StaffCalendar {
     }
 
     foreach ($month in $months) {
-        # Add New Sheet
+        # Add new sheet
         $worksheet = $workbook.Worksheets.Add(
             [System.Reflection.Missing]::Value, $workbook.Worksheets.Item($workbook.Worksheets.Count)
         )
@@ -245,7 +245,7 @@ Function New-StaffCalendar {
         $range.HorizontalAlignment = -4108  # Center horizontally (xlCenter)
         $range.VerticalAlignment = -4108    # Center vertically (xlCenter)
 
-        # Write the weeks to the Excel worksheet starting at row 4.
+        # Write the weeks to the Excel worksheet starting at row 4
         $row = 4
         foreach ($week in $weeks) {
             # Define week name and date range
@@ -274,13 +274,13 @@ Function New-StaffCalendar {
 
             # Insert Day Data
             foreach ($day in $week) {
-                # Move start of month cell to the correct location.
+                # Move start of month cell to the correct location
                 if (
-                    # Check if it's the first week of the month.
+                    # Check if it's the first week of the month
                     [bool](
                         Compare-Object -ReferenceObject $weeks[0] -DifferenceObject $week -ExcludeDifferent -IncludeEqual
                     ) -and (
-                        #Check if it's the first workday of the month.
+                        #Check if it's the first workday of the month
                         $day -eq $week[0]
                     )
                 ) {
@@ -307,7 +307,7 @@ Function New-StaffCalendar {
                     $hoursCell.NumberFormat = "@"  # "@" symbol is the cell format code for text
                     $hoursCell.Value2 = $user.WorkHours
 
-                    # Increase hour row count.
+                    # Increase hour row count
                     $hourRowCount++
                 }
 
