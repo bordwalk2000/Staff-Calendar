@@ -120,7 +120,19 @@ Function New-StaffCalendar {
             HelpMessage = "Set the zoom level you would like for each sheet."
         )]
         [int]
-        $worksheetZoomLevel = 100
+        $worksheetZoomLevel = 100,
+
+        # Specify location where the excel file is going to be saved
+        [Parameter(
+            HelpMessage = "Path Excel file will be saved to."
+        )]
+        [ValidateScript(
+            {
+                Test-Path -Path $_
+            }
+        )]
+        [string]
+        $saveLocation = $PWD
     )
 
     # Create userList object
@@ -327,8 +339,8 @@ Function New-StaffCalendar {
     # Set Jan cell to tbe the active one
     $workbook.Worksheets.Item("Jan").Activate()
 
-    # Define Excel file properties
-    $excelFile = "$PSScriptRoot\$excelFileName.xlsx"
+    # Define where the file wil be saved
+    $excelFile = "$saveLocation\$excelFileName.xlsx"
 
     # Remove existing file
     Remove-Item -Path $excelFile -ErrorAction SilentlyContinue
