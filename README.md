@@ -10,10 +10,6 @@ Quickly create quick Excel file.
 New-StaffCalendar -year 1997 -users "Jack O", "Sam C", "Daniel J"
 ````
 
-##  ⚠️ Caution
-Clicking around in the temp excel file that is currently being populated will cause some errors.
-
-
 ## 💿 Installation
 
 The StaffCalendar PowerShell Module is published to the PowerShell Gallery.  You can install it into your user profile by running the following command.

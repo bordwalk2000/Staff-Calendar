@@ -1,54 +1,54 @@
-    <#
-    .SYNOPSIS
-    Creates a staff calendar for a specified year, either from a list of users with the same work hours or from a CSV file.
+<#
+.SYNOPSIS
+Creates a staff calendar for a specified year, either from a list of users with the same work hours or from a CSV file.
 
-    .DESCRIPTION
-    This function generates a staff calendar in Excel format for a given year.  It can accept a list of users with default work
-    hours or import users from a CSV file.  The resulting calendar includes workdays, user names, and their respective work
-    hours.  Various parameters allow customization of the Excel file, including the file name, worksheet title, and zoom level.
+.DESCRIPTION
+This function generates a staff calendar in Excel format for a given year.  It can accept a list of users with default work
+hours or import users from a CSV file.  The resulting calendar includes workdays, user names, and their respective work
+hours.  Various parameters allow customization of the Excel file, including the file name, worksheet title, and zoom level.
 
-    .PARAMETER year
-    Specifies the calendar year to create.
+.PARAMETER year
+Specifies the calendar year to create.
 
-    .PARAMETER users
-    Specifies the list of users to be added to the calendar.  This parameter is mandatory when using the "users" parameter set.
+.PARAMETER users
+Specifies the list of users to be added to the calendar.  This parameter is mandatory when using the "users" parameter set.
 
-    .PARAMETER defaultUserHours
-    Specifies the work hours to be used for all manually specified users. The default value is "8-5".
-    This parameter is in the "users" parameter set.
+.PARAMETER defaultUserHours
+Specifies the work hours to be used for all manually specified users. The default value is "8-5".
+This parameter is in the "users" parameter set.
 
-    .PARAMETER csvPath
-    Specifies the CSV file path to import user data. The CSV requires a header row of "Name" and "WorkHours".
-    This parameter is mandatory when using the "csv" parameter set.
+.PARAMETER csvPath
+Specifies the CSV file path to import user data. The CSV requires a header row of "Name" and "WorkHours".
+This parameter is mandatory when using the "csv" parameter set.
 
-    .PARAMETER excelFileName
-    Specifies the filename of the created Excel file. The default value is "$year Staff Schedule".
+.PARAMETER excelFileName
+Specifies the filename of the created Excel file. The default value is "$year Staff Schedule".
 
-    .PARAMETER worksheetTitleRow
-    Specifies the worksheet title string that will be followed by the month name. The default value is "Staff Calendar".
+.PARAMETER worksheetTitleRow
+Specifies the worksheet title string that will be followed by the month name. The default value is "Staff Calendar".
 
-    .PARAMETER firstColumnWidth
-    Specifies the width of the "A" column. The default value is 13.
+.PARAMETER firstColumnWidth
+Specifies the width of the "A" column. The default value is 13.
 
-    .PARAMETER worksheetZoomLevel
-    Specifies the zoom level for each sheet. The default value is 100.
+.PARAMETER worksheetZoomLevel
+Specifies the zoom level for each sheet. The default value is 100.
 
-    .EXAMPLE
-    PS C:\> New-StaffCalendar -year 1997 -users "Jack O", "Sam C", "Daniel J" -defaultUserHours "9-5"
+.EXAMPLE
+PS C:\> New-StaffCalendar -year 1997 -users "Jack O", "Sam C", "Daniel J" -defaultUserHours "9-5"
 
-    Creates a staff calendar for the year 1997 with specified users and default work hours from 9 to 5.
+Creates a staff calendar for the year 1997 with specified users and default work hours from 9 to 5.
 
-    .EXAMPLE
-    PS C:\> New-StaffCalendar -year 2266 -csvPath .\csv_example\staff.csv
+.EXAMPLE
+PS C:\> New-StaffCalendar -year 2266 -csvPath .\csv_example\staff.csv
 
-    Creates a staff calendar for the year 2266 using user data imported from the specified CSV file.
+Creates a staff calendar for the year 2266 using user data imported from the specified CSV file.
 
-    .NOTES
-    This function requires Excel to be installed on the system as it interacts with the Excel COM object to generate the calendar.
+.NOTES
+This function requires Excel to be installed on the system as it interacts with the Excel COM object to generate the calendar.
 
-    .LINK
-    https://github.com/bordwalk2000/StaffCalendar
-    #>
+.LINK
+https://github.com/bordwalk2000/StaffCalendar
+#>
 
 Function New-StaffCalendar {
     [CmdletBinding(
@@ -78,7 +78,7 @@ Function New-StaffCalendar {
             ParameterSetName = "users"
         )]
         [string]
-        $defaultUserHours = "8-5",
+        $defaultUserHours = "8:00-5:00",
 
         # List of users to be added
         [Parameter(
@@ -155,7 +155,7 @@ Function New-StaffCalendar {
     try {
         # Creates new Excel application
         $excel = New-Object -ComObject Excel.Application
-        $excel.Visible = $true # Should be true otherwise looks like script is hung while it creates the file.
+        $excel.Visible = $false # Set to true for testing
         $workbook = $excel.Workbooks.Add()
     }
     catch {
@@ -183,6 +183,16 @@ Function New-StaffCalendar {
     }
 
     foreach ($month in $months) {
+        # Define progress bar params
+        $progressParams = @{
+            Activity        = "Creating Calendar"
+            Status          = "Processing $($month.MonthName)"
+            PercentComplete = ((100 / 12) * $month.MonthNumber)
+        }
+
+        # Create progress bar
+        Write-Progress @progressParams
+
         # Add new sheet
         $worksheet = $workbook.Worksheets.Add(
             [System.Reflection.Missing]::Value, $workbook.Worksheets.Item($workbook.Worksheets.Count)
@@ -332,6 +342,9 @@ Function New-StaffCalendar {
         # Set Font for the Sheet
         $worksheet.UsedRange.Font.Name = "Calibri"
     }
+
+    # Complete the progress bar
+    Write-Progress -Completed -Activity "Creating Calendar"
 
     # Delete worksheet named Sheet1
     $workbook.Worksheets.Item("Sheet1").Delete()
